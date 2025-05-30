@@ -10,11 +10,16 @@ export async function onRequest(context) {
   // 打印调试
   console.log('代理path:', path);
 
+  if (!path) {
+    return new Response(JSON.stringify({ error: 'Missing API path' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
   const url = new URL(request.url);
   const search = url.search ? url.search : '';
-  const targetUrl = path
-    ? `https://api.cnb.cool/${path}${search}`
-    : `https://api.cnb.cool/${search}`;
+  const targetUrl = `https://api.cnb.cool/${path}${search}`;
   console.log('代理targetUrl:', targetUrl);
 
   const newRequest = new Request(targetUrl, {
